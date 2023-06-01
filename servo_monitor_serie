@@ -1,0 +1,32 @@
+#include <Servo.h>
+
+Servo servo1;
+int pinServo = 6;
+int angulo = 0;
+int pot = A0;
+int potvalue=0;
+String inString = "";
+
+void setup() {
+  Serial.begin(9600);
+  servo1.attach(pinServo);
+}
+void loop() {
+  if(Serial.available() > 0){
+    int inChar = Serial.read();
+    if(inChar != '\n'){
+      inString += (char)inChar; 
+    }else{
+      float angulo =inString.toFloat();
+      Serial.println(angulo);
+      servo1.write(angulo);
+      inString = "";
+    }
+    delay(400);
+  }else{
+    potvalue= analogRead(pot);
+    angulo=map(potvalue,0,1023,0,180);
+    servo1.write(angulo);  
+    delay(10);
+  }
+}
